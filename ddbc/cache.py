@@ -28,6 +28,9 @@ class Client(object):
     def get(self, key, default=None):
         item = self.cache.get(key, {})
 
+        if not self._is_available_item(item):
+            item = {}
+
         if item == {}:
             try:
                 item = self.read_table_item(key)
@@ -49,16 +52,16 @@ class Client(object):
             'data': value,
             'until': self._get_until_time(ttl)
         }
-        self.cache[key] = item
 
         try:
-            self.put_table_item(key)
+            self.put_table_item(key, item)
         except botocore.exceptions.ClientError:
             if self.report_error:
                 raise
             else:
                 return False
 
+        self.cache[key] = item
         return True
 
     def __delitem__(self, key):
@@ -66,8 +69,8 @@ class Client(object):
 
     def delete(self, key):
         try:
-            del self.cache[key]
             self.delete_table_item(key)
+            del self.cache[key]
         except KeyError:
             pass
         except botocore.exceptions.ClientError:
@@ -83,14 +86,14 @@ class Client(object):
             ttl = self.default_ttl
 
         if not ttl == -1:
-            ttl = time.time() + ttl
+            ttl = int(time.time()) + ttl
 
         return ttl
 
     def _is_available_item(self, item):
-        now = time.time()
+        now = int(time.time())
         until = item.get('until', -1)
-        return until == -1 or now > until
+        return (until == -1 or now <= until)
 
     def _generate_hash_key(self, key):
         return hashlib.sha1(key).hexdigest()
@@ -100,11 +103,13 @@ class Client(object):
         item = self.table.get_item(Key={'key': key})
         return self._deserialize(item.get('Item', {}))
 
-    def put_table_item(self, key, item, until):
+    def put_table_item(self, key, item):
         item['key'] = self._generate_hash_key(key)
         self.table.put_item(Item=self._serialize(item))
+        self._deserialize(item)
 
     def delete_table_item(self, key):
+        key = self._generate_hash_key(key)
         self.table.delete_item(Key={'key': key})
 
     def _serialize(self, item):
@@ -112,5 +117,12 @@ class Client(object):
         return item
 
     def _deserialize(self, item):
-        item['data'] = pickle.loads(item['data'])
+        if 'data' not in item:
+            return {}
+
+        item['data'] = pickle.loads(item.get('data', '').decode('utf-8'))
+
+        if 'until' in item:
+            item['until'] = int(item['until'])
+
         return item

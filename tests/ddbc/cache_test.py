@@ -114,11 +114,11 @@ class ClientTestCase(TestCase):
         with patch('time.time') as p:
             p.return_value = 100.1
             client = Client(table_name='foo')
-            eq_(client._get_until_time(100), 200.1)
+            eq_(client._get_until_time(100), 200)
 
     def test_is_available_item(self):
         with patch('time.time') as p:
-            p.return_value = 100.1
+            p.return_value = 102.0
             client = Client(table_name='foo')
             eq_(client._is_available_item({}), True)
             eq_(client._is_available_item({'until': 101}), False)
@@ -142,7 +142,7 @@ class ClientTestCase(TestCase):
     def test_put_table_item(self):
         client = Client(table_name='foo')
         client.table = Mock()
-        client.put_table_item('bar', {'data': 'buz'}, 100)
+        client.put_table_item('bar', {'data': 'buz'})
 
     def test_delete_table_item(self):
         client = Client(table_name='foo')
@@ -152,6 +152,6 @@ class ClientTestCase(TestCase):
     def test_serialize(self):
         client = Client(table_name='foo')
         eq_(
-            client._deserialize(client._serialize({'data': 'bar'})),
-            {'data': 'bar'}
+            client._deserialize(client._serialize({'data': 'bar', 'until': 1.0})),
+            {'data': 'bar', 'until': 1}
         )
