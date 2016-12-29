@@ -134,16 +134,23 @@ class ClientTestCase(TestCase):
     def test_read_table_item(self):
         client = Client(table_name='foo')
         m = Mock()
-        m.get_item = Mock(return_value={'Item': 'bar'})
+        m.get_item = Mock(return_value={'Item': client._serialize({'data': 'bar'})})
         client.table = m
-        eq_(client.read_table_item('buz'), 'bar')
+        eq_(client.read_table_item('buz'), {'data': 'bar'})
 
     def test_put_table_item(self):
         client = Client(table_name='foo')
         client.table = Mock()
-        client.put_table_item('buz', {}, 100)
+        client.put_table_item('bar', {'data': 'buz'}, 100)
 
     def test_delete_table_item(self):
         client = Client(table_name='foo')
         client.table = Mock()
         client.delete_table_item('bar')
+
+    def test_serialize(self):
+        client = Client(table_name='foo')
+        eq_(
+            client._deserialize(client._serialize({'data': 'bar'})),
+            {'data': 'bar'}
+        )

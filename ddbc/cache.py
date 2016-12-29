@@ -4,6 +4,7 @@ import boto3
 import botocore
 import time
 import hashlib
+import pickle
 from ddbc.utils import get_table
 
 
@@ -97,11 +98,20 @@ class Client(object):
 
     def read_table_item(self, key):
         key = self._generate_hash_key(key)
-        return self.table.get_item(Key={'key': key}).get('Item', {})
+        item = self.table.get_item(Key={'key': key})
+        return self._deserialize(item.get('Item', {}))
 
     def put_table_item(self, key, item, until):
         item['key'] = self._generate_hash_key(key)
-        self.table.put_item(Item=item)
+        self.table.put_item(Item=self._serialize(item))
 
     def delete_table_item(self, key):
         self.table.delete_item(Key={'key': key})
+
+    def _serialize(self, item):
+        item['data'] = pickle.dumps(item['data'])
+        return item
+
+    def _deserialize(self, item):
+        item['data'] = pickle.loads(item['data'])
+        return item
