@@ -5,7 +5,10 @@ import botocore
 
 
 def get_dynamodb_resource(region):
-    return boto3.resource('dynamodb', region)
+    if region is None:
+        return boto3.resource('dynamodb')
+    else:
+        return boto3.resource('dynamodb', region)
 
 
 def get_table(table_name, region):

@@ -17,6 +17,7 @@ class UtilsTestCase(TestCase):
     def test_get_dynamodb_resource(self):
         with patch('boto3.resource'):
             get_dynamodb_resource('us-east-1')
+            get_dynamodb_resource(None)
 
     def test_get_table(self):
         with patch('ddbc.utils.get_dynamodb_resource'):

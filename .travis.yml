@@ -4,5 +4,7 @@ python:
 install:
 - python setup.py install
 - pip install coveralls
+env:
+- AWS_DEFAULT_REGION=us-east-1
 script: python setup.py nosetests
 after_success: coveralls
