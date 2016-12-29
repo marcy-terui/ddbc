@@ -22,9 +22,72 @@ Amazon DynamoDB as a cache store.
 pip install ddbc
 ```
 
-# Setup and configuration
+# Setup
 
-Coming soon.
+- Create IAM Role or User
+
+Policy example:
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+              "dynamodb:CreateTable",
+              "dynamodb:DeleteItem",
+              "dynamodb:GetItem",
+              "dynamodb:PutItem"
+            ],
+            "Resource": "arn:aws:dynamodb:<region>:<account-id>:table/<cache-table>"
+        }
+    ]
+}
+```
+
+- Create the DynamoDB table for cache
+
+Script Example:
+
+```python
+#!/usr/bin/env python
+
+import ddbc
+
+ddbc.utils.create_table(
+    table_name='cache_table',
+    region='us-east-1', # optional
+    read_units=10,      # default: 5
+    write_units=10      # default: 5
+)
+```
+
+# Usage
+
+```python
+import ddbc
+import time
+
+cache = ddbc.cache.Client(
+    table_name='cache_table',
+    region='us-east-1', # optional
+    default_ttl=100,    # default: -1 (Infinity)
+    report_error=True   # default: False
+)
+cache['foo'] = 'bar'
+print(cache['foo']) # => 'bar'
+
+time.sleep(100)
+print(cache['foo']) # => None
+
+cache.set('foo', 'bar', 1000)
+time.sleep(100)
+print(cache['foo']) # => 'bar'
+
+del cache['foo']
+print(cache.get('foo', 'buz')) # => 'buz'
+```
 
 Development
 -----------
