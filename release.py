@@ -4,6 +4,7 @@ import ddbc
 
 os.system("python setup.py install")
 
+os.system("rm -rf dist")
 os.system("pandoc README.md --from=markdown --to=rst > README.txt")
 os.system("python setup.py sdist bdist_wheel")
 os.system("twine upload dist/*")

@@ -38,7 +38,8 @@ Policy example:
               "dynamodb:CreateTable",
               "dynamodb:DeleteItem",
               "dynamodb:GetItem",
-              "dynamodb:PutItem"
+              "dynamodb:PutItem",
+              "dynamodb:DescribeTable"
             ],
             "Resource": "arn:aws:dynamodb:<region>:<account-id>:table/<cache-table>"
         }
