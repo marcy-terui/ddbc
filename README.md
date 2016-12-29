@@ -53,7 +53,7 @@ Script Example:
 ```python
 #!/usr/bin/env python
 
-import ddbc
+import ddbc.utils
 
 ddbc.utils.create_table(
     table_name='cache_table',
@@ -66,7 +66,7 @@ ddbc.utils.create_table(
 # Usage
 
 ```python
-import ddbc
+import ddbc.cache
 import time
 
 cache = ddbc.cache.Client(

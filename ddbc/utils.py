@@ -19,8 +19,9 @@ def create_table(table_name, region=None, read_units=5, write_units=5):
     try:
         get_table(table_name, region).creation_date_time
     except botocore.exceptions.ClientError as e:
-
-        if e.response['Error']['Code'] == 'ResourceNotFoundException':
+        if e.response['Error']['Code'] != 'ResourceNotFoundException':
+            raise
+        else:
             table = get_dynamodb_resource(region).create_table(
                 TableName=table_name,
                 KeySchema=[
@@ -30,6 +31,10 @@ def create_table(table_name, region=None, read_units=5, write_units=5):
                     },
                 ],
                 AttributeDefinitions=[
+                    {
+                        'AttributeName': 'key',
+                        'AttributeType': 'S'
+                    },
                     {
                         'AttributeName': 'data',
                         'AttributeType': 'S'
