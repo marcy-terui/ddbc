@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import boto3
 import botocore
 import time
 import hashlib

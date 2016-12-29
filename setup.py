@@ -17,7 +17,7 @@ setup_options = dict(
     author='Masashi Terui',
     author_email='marcy9114+pypi@gmail.com',
     url='https://github.com/marcy-terui/ddbc',
-    packages=find_packages(exclude=['tests*', 'register']),
+    packages=find_packages(exclude=['tests*', 'release']),
     install_requires=open('requirements.txt').read().splitlines(),
     setup_requires=[
         'nose',

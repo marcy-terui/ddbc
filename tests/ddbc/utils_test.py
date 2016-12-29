@@ -24,7 +24,7 @@ class UtilsTestCase(TestCase):
             get_table('foo', 'us-east-1')
 
     def test_create_table_exists(self):
-        with patch('ddbc.utils.get_table') as p:
+        with patch('ddbc.utils.get_table'):
             create_table('foo', 'us-east-1')
 
     def test_create_table_not_exists(self):
@@ -33,5 +33,6 @@ class UtilsTestCase(TestCase):
             patch('ddbc.utils.get_dynamodb_resource')
         ) as (p, _):
             p.side_effect = botocore.exceptions.ClientError(
-                {'Error': {'Code': 'ResourceNotFoundException'}}, 'create_table')
+                {'Error': {'Code': 'ResourceNotFoundException'}},
+                'create_table')
             create_table('foo', 'us-east-1')

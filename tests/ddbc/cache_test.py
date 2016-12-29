@@ -3,9 +3,7 @@
 from unittest import TestCase
 from mock import Mock, patch
 from nose.tools import eq_, raises
-from contextlib import nested
 import botocore
-import time
 
 from ddbc.cache import Client
 
@@ -92,7 +90,8 @@ class ClientTestCase(TestCase):
         client = Client(table_name='foo')
         client.delete_table_item = Mock(
             side_effect=botocore.exceptions.ClientError(
-                {'Error': {'Code': 'ResourceNotFoundException'}}, 'delete_item'))
+                {'Error': {'Code': 'ResourceNotFoundException'}},
+                'delete_item'))
         client.cache['bar'] = 'buz'
         eq_(client.delete('bar'), False)
 
@@ -102,7 +101,8 @@ class ClientTestCase(TestCase):
         client.report_error = True
         client.delete_table_item = Mock(
             side_effect=botocore.exceptions.ClientError(
-                {'Error': {'Code': 'ResourceNotFoundException'}}, 'delete_item'))
+                {'Error': {'Code': 'ResourceNotFoundException'}},
+                'delete_item'))
         client.cache['bar'] = 'buz'
         client.delete('bar')
 
@@ -134,7 +134,8 @@ class ClientTestCase(TestCase):
     def test_read_table_item(self):
         client = Client(table_name='foo')
         m = Mock()
-        m.get_item = Mock(return_value={'Item': client._serialize({'data': 'bar'})})
+        m.get_item = Mock(
+            return_value={'Item': client._serialize({'data': 'bar'})})
         client.table = m
         eq_(client.read_table_item('buz'), {'data': 'bar'})
 
