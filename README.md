@@ -1,6 +1,10 @@
 ddbc
 =======
 
+[![Version](https://img.shields.io/pypi/v/ddbc.svg)](https://pypi.python.org/pypi/ddbc)
+[![Build Status](https://img.shields.io/travis/marcy-terui/ddbc/master.svg)](http://travis-ci.org/marcy-terui/ddbc)
+[![Coverage](https://img.shields.io/coveralls/marcy-terui/ddbc.svg)](https://coveralls.io/github/marcy-terui/ddbc)
+
 # Description
 
 Amazon DynamoDB as a cache store.
