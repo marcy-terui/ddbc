@@ -146,4 +146,4 @@ class ClientTestCase(TestCase):
     def test_delete_table_item(self):
         client = Client(table_name='foo')
         client.table = Mock()
-        client.put_table_item('buz', {}, 100)
+        client.delete_table_item('bar')
