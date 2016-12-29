@@ -34,16 +34,7 @@ def create_table(table_name, region=None, read_units=5, write_units=5):
                     {
                         'AttributeName': 'key',
                         'AttributeType': 'S'
-                    },
-                    {
-                        'AttributeName': 'data',
-                        'AttributeType': 'S'
-                    },
-                    {
-                        'AttributeName': 'until',
-                        'AttributeType': 'N'
-                    },
-
+                    }
                 ],
                 ProvisionedThroughput={
                     'ReadCapacityUnits': read_units,
