@@ -25,6 +25,7 @@ class ClientTestCase(TestCase):
         client = Client(table_name='foo')
         client._is_available_item = Mock(return_value=False)
         client.cache = {'foo': {'data': 'bar', 'until': -1}}
+        client.read_table_item = Mock()
         eq_(client.get('foo', 'buz'), 'buz')
 
     def test_get_from_table(self):
