@@ -35,6 +35,19 @@ class ClientTestCase(TestCase):
             return_value={'data': 'qux', 'until': -1})
         eq_(client.get('foo'), 'qux')
 
+    def test_key_in_cache(self):
+        client = Client(table_name='foo')
+        client._is_available_item = Mock(return_value=True)
+        client.table.get_item = Mock(
+                return_value={'Item': {'data': 'qux', 'until': -1}})
+        eq_('foo' in client, True)
+
+    def test_key_not_in_cache(self):
+        client = Client(table_name='foo')
+        client._is_available_item = Mock(return_value=False)
+        client.table.get_item = Mock(return_value={})
+        eq_('foo' in client, False)
+
     @raises(botocore.exceptions.ClientError)
     def test_get_error(self):
         client = Client(table_name='foo')
