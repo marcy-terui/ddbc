@@ -22,6 +22,9 @@ class Client(object):
         self.default_ttl = default_ttl
         self.report_error = report_error
 
+    def __contains__(self, key):
+        return self.get(key) is not None
+
     def __getitem__(self, key):
         return self.get(key)
 
